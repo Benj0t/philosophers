@@ -13,6 +13,8 @@ typedef struct	s_data
 	struct timeval	reftime;
 	struct timeval	curtime;
 	int				n_forks;
+	int				fid[2];
+	int				dead;
 	int				n_philos;
 	MUTEX			*forks;
 	pthread_t		*philo;
@@ -29,10 +31,13 @@ typedef	struct	s_params
 
 typedef struct	s_all
 {
+	int			id;
 	t_data		*data;
 	t_params	*par;
 }				t_all;
 
+
+void		    ft_putendl(char *str);
 int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);

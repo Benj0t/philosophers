@@ -21,9 +21,7 @@ void	init_mutex(MUTEX *arr, int len)
 int		init_data(t_params *par, t_data *data)
 {
 
-	data->n_forks = par->n_philos - 1;
-	if (par->n_philos <= 2)
-		data->n_forks = 2;
+	data->n_forks = par->n_philos;
 	data->philo = (pthread_t *)malloc(sizeof(pthread_t) * (par->n_philos));
 	if (!data->philo)
 		return (1);
