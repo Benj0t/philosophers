@@ -4,16 +4,19 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <sys/time.h>
 
 # define MUTEX pthread_mutex_t
 
 typedef struct	s_data
 {
-	int			n_forks;
-	int			n_philos;
-	MUTEX		*forks;
-	pthread_t	*philo;
-}				t_data;
+	struct timeval	reftime;
+	struct timeval	curtime;
+	int				n_forks;
+	int				n_philos;
+	MUTEX			*forks;
+	pthread_t		*philo;
+}					t_data;
 
 typedef	struct	s_params
 {
