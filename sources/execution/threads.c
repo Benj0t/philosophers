@@ -5,8 +5,7 @@ void    *start_routine(void *par)
     t_all *all;
 
     all = (t_all *)par;
-    write(1, "In\n", 3);
-    write(1, "End\n", 4);
+    write(1, "wsh\n", 4);
     return (NULL);
 }
 

@@ -9,30 +9,28 @@ int		free_data(t_data *data)
 	return (1);
 }
 
-void	init_arr(int *arr, int len)
+void	init_mutex(MUTEX *arr, int len)
 {
 	int i;
 
 	i = 0;
 	while (i < len)
-		arr[i++] = 0;
-	arr[i] = -1;
+		pthread_mutex_init(&(arr[i++]), NULL);
 }
 
 int		init_data(t_params *par, t_data *data)
 {
-	int n_forks;
 
-	n_forks = par->n_philos - 1;
+	data->n_forks = par->n_philos - 1;
 	if (par->n_philos <= 2)
-		n_forks = 2;
+		data->n_forks = 2;
 	data->philo = (pthread_t *)malloc(sizeof(pthread_t) * (par->n_philos));
 	if (!data->philo)
 		return (1);
-	data->forks = (int *)malloc(sizeof(int) * (n_forks + 1));
+	data->forks = (MUTEX *)malloc(sizeof(MUTEX) * (data->n_forks));
 	if (!data->forks)
 		return (1);
-	init_arr(data->forks, n_forks);
+	init_mutex(data->forks, data->n_forks);
 	return (0);
 }
 
