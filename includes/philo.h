@@ -8,7 +8,7 @@
 typedef struct	s_data
 {
 	int			*forks;
-	int			*philo;
+	pthread_t	*philo;
 }				t_data;
 
 typedef	struct	s_params
@@ -20,13 +20,19 @@ typedef	struct	s_params
 	int			n_times_eat;
 }				t_params;
 
+typedef struct	s_all
+{
+	t_data		*data;
+	t_params	*par;
+}				t_all;
+
 int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
 void			init_arr(int *arr, int len);
 int             parser(int argc, char **argv, t_params *par);
 int				philosophers(t_params *par, t_data *data);
-int			    create_threads(int *arr);
+int			    create_threads(t_data *data, int nb, t_params *par);
 int             error_message(char *str);
 
 #endif

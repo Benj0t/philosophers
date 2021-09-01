@@ -30,7 +30,7 @@ OBJ = $(SRCS:.c=.o)
 CC = gcc
 L_CC = clang
 FLAGS = -Wall -Wextra -Werror
-
+LIB = -lpthread
 ### COLORS ###
 
 NOC = \033[0m
@@ -49,11 +49,11 @@ all: 		$(NAME)
 
 $(NAME): 	$(OBJ)
 			@echo "$(CYAN)Constructing executable:$(NOC) $@"
-			@$(L_CC) -g3 $(FLAGS) -o $(NAME) $(OBJ) $(LIB)
+			@$(L_CC) $(FLAGS) -o $(NAME) $(OBJ) $(LIB)
 
 .c.o:		${SRCS}
 			@echo " $(VIOLET)[$(L_CC)] $(GREEN)[$(FLAGS)]$(NOC) $(YELLOW)in progress ...:$(NOC) $< $(RED)->$(NOC) $@"
-			@$(L_CC) -g3 $(FLAGS) -c -I$(INC_PATH) $< -o ${<:.c=.o}
+			@$(L_CC) $(FLAGS) -c -I$(INC_PATH) $< -o ${<:.c=.o}
 clean:
 	@echo "\n$(RED)Removing '.o' objects: $(NOC) $@"
 	@rm -f $(OBJ)
@@ -64,4 +64,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean re fclean MLX LIBFT
+.PHONY: all clean re fclean
