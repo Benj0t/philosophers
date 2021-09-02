@@ -16,35 +16,40 @@ void	eat(t_all *all, int id)
 
 	i = 0;
 	num = 0;
-	gettimeofday(&(all->data->reftime), NULL);
+	all->data->reftime = get_time();
 	while (num != 2)
 	{
 		if (!pthread_mutex_lock(&(all->data->forks[i])))
 		{
 			fid[num++] = i;
-			write(1, "coucou\n", 7);
-			//printf("Philosopher %d has %d fork(s)\n", id, num);
+			printf("Philosopher %d has %d fork(s)\n", id, num);
 		}
-		gettimeofday(&(all->data->curtime), NULL);
-		if ((all->data->curtime.tv_usec - all->data->reftime.tv_usec) > all->par->time_die)
+		all->data->curtime = get_time();
+		//printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
+		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
 		{
-			printf("%ld - %ld > %d\n", all->data->curtime.tv_usec, all->data->reftime.tv_usec,  all->par->time_die);
+			printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
 			philo_die(all, id);
 			return;
 		}
 		i++;
-		if (i == all->data->n_philos)
+		if (i == all->par->n_philos)
 			i = 0;
 	}
 	if (num == 2)
 	{
 		printf("Philosopher %d starts eating\n", id);
 		usleep(all->par->time_eat);
+		all->data->curtime = get_time();
+		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
+		{
+			printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
+			philo_die(all, id);
+			return;
+		}
 		printf("Philosopher %d ends eating\n", id);
 		pthread_mutex_unlock(&(all->data->forks[fid[0]]));
 		pthread_mutex_unlock(&(all->data->forks[fid[1]]));
-		//Start thinking
-		//usleep(time_to_)
 	}
 }
 

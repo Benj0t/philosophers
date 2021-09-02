@@ -21,8 +21,10 @@ FILES =		./sources/main\
 			./sources/parser/parsing\
 			./sources/parser/ft_atoi\
 			./sources/parser/utils\
+			./sources/parser/print\
 			./sources/execution/philo\
 			./sources/execution/threads\
+			./sources/execution/philo_utils\
 
 SRCS = $(addsuffix .c, $(FILES))
 OBJ = $(SRCS:.c=.o)

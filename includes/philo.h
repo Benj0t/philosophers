@@ -10,12 +10,11 @@
 
 typedef struct	s_data
 {
-	struct timeval	reftime;
-	struct timeval	curtime;
+	long int		reftime;
+	long int		curtime;
 	int				n_forks;
 	int				fid[2];
 	int				dead;
-	int				n_philos;
 	MUTEX			*forks;
 	pthread_t		*philo;
 }					t_data;
@@ -37,7 +36,11 @@ typedef struct	s_all
 }				t_all;
 
 
-void		    ft_putendl(char *str);
+void    		print_status(long int timestamp, int id, char *str);
+void   		 	ft_putlnbr(long int nb);
+void    		ft_putnbr(int nb);
+void		    ft_putchar(char c);
+long int    	get_time();
 int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
