@@ -3,43 +3,39 @@
 
 void	philo_die(t_all *all, int id)
 {
-	(void)all;
-	printf("Philosopher %d died\n", id);
+	print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
 	return;
 }
 
 void	eat(t_all *all, int id)
 {
 	int num;
-	int fid[2];
-	int i;
 
-	i = 0;
 	num = 0;
 	all->data->reftime = get_time();
 	while (num != 2)
 	{
-		if (!pthread_mutex_lock(&(all->data->forks[i])))
+		if ((!pthread_mutex_lock(&(all->data->forks[id - 1]))))
 		{
-			fid[num++] = i;
-			printf("Philosopher %d has %d fork(s)\n", id, num);
+			num++;
+			print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
+		}
+		if (!pthread_mutex_lock(&(all->data->forks[id])))
+		{
+			num++;
+			print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
 		}
 		all->data->curtime = get_time();
-		//printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
 		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
 		{
-			printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
 			philo_die(all, id);
 			return;
 		}
-		i++;
-		if (i == all->par->n_philos)
-			i = 0;
 	}
 	if (num == 2)
 	{
-		printf("Philosopher %d starts eating\n", id);
-		usleep(all->par->time_eat);
+		print_status(get_tstamp(all->data->start), id, "is eating\n");
+		ft_usleep(all->par->time_eat);
 		all->data->curtime = get_time();
 		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
 		{
@@ -47,9 +43,8 @@ void	eat(t_all *all, int id)
 			philo_die(all, id);
 			return;
 		}
-		printf("Philosopher %d ends eating\n", id);
-		pthread_mutex_unlock(&(all->data->forks[fid[0]]));
-		pthread_mutex_unlock(&(all->data->forks[fid[1]]));
+		pthread_mutex_unlock(&(all->data->forks[id -1]));
+		pthread_mutex_unlock(&(all->data->forks[id]));
 	}
 }
 
@@ -60,11 +55,12 @@ void	*start_routine(void *par)
 	int				id;
 	
 	all = (t_all *)par;
+	all->data->start = get_time();
 	id = ++(all->id);
+	if (!(id % 2))
+		ft_usleep(all->par->time_eat);
 	while (1)
-	{
 		eat(all, id);
-	}
 	return (NULL);
 }
 

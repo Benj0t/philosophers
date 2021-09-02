@@ -10,6 +10,7 @@
 
 typedef struct	s_data
 {
+	long int		start;
 	long int		reftime;
 	long int		curtime;
 	int				n_forks;
@@ -41,6 +42,8 @@ void   		 	ft_putlnbr(long int nb);
 void    		ft_putnbr(int nb);
 void		    ft_putchar(char c);
 long int    	get_time();
+void  	    	ft_usleep(long int time);
+long int	    get_tstamp(long int ref);
 int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
