@@ -22,13 +22,14 @@ int		init_data(t_params *par, t_data *data)
 {
 
 	data->n_forks = par->n_philos;
-	data->philo = (pthread_t *)malloc(sizeof(pthread_t) * (par->n_philos));
+	data->philo = (THREAD *)malloc(sizeof(THREAD) * (par->n_philos));
 	if (!data->philo)
 		return (1);
 	data->forks = (MUTEX *)malloc(sizeof(MUTEX) * (data->n_forks));
 	if (!data->forks)
 		return (1);
 	init_mutex(data->forks, data->n_forks);
+	pthread_mutex_init(&(data->print), NULL);
 	return (0);
 }
 

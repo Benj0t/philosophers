@@ -3,49 +3,52 @@
 
 void	philo_die(t_all *all, int id)
 {
-	print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
+	pthread_mutex_lock(&(all->data->print));
+	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
+	pthread_mutex_unlock(&(all->data->print));
 	return;
 }
 
-void	eat(t_all *all, int id)
+int		check_death(t_all *all, int id)
 {
-	int num;
+	all->time->curtime = get_time();
+	if ((all->time->curtime - all->time->reftime) > all->par->time_die)
+	{
+			philo_die(all, id);
+			return (FALSE);
+	}
+	return (TRUE);
+}
 
-	num = 0;
-	all->data->reftime = get_time();
-	while (num != 2)
-	{
-		if ((!pthread_mutex_lock(&(all->data->forks[id - 1]))))
-		{
-			num++;
-			print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
-		}
-		if (!pthread_mutex_lock(&(all->data->forks[id])))
-		{
-			num++;
-			print_status(get_tstamp(all->data->start), id, "has taken a fork\n");
-		}
-		all->data->curtime = get_time();
-		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
-		{
-			philo_die(all, id);
-			return;
-		}
-	}
-	if (num == 2)
-	{
-		print_status(get_tstamp(all->data->start), id, "is eating\n");
-		ft_usleep(all->par->time_eat);
-		all->data->curtime = get_time();
-		if ((all->data->curtime - all->data->reftime) > all->par->time_die)
-		{
-			printf("%ld - %ld = %ld > %d\n", all->data->curtime, all->data->reftime, all->data->curtime - all->data->reftime, all->par->time_die);
-			philo_die(all, id);
-			return;
-		}
-		pthread_mutex_unlock(&(all->data->forks[id -1]));
-		pthread_mutex_unlock(&(all->data->forks[id]));
-	}
+void	ft_sleep(t_all *all, int id)
+{
+	ft_usleep(all->par->time_sleep);
+	pthread_mutex_lock(&(all->data->print));
+	print_status(get_tstamp(all->time->start), id, "is sleeping\n");
+	pthread_mutex_unlock(&(all->data->print));
+}
+
+void	ft_eat(t_all *all, int id)
+{
+	all->time->reftime = get_time();
+	pthread_mutex_lock(&(all->data->forks[id - 1]));
+	pthread_mutex_lock(&(all->data->print));
+	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
+	pthread_mutex_unlock(&(all->data->print));
+	pthread_mutex_lock(&(all->data->forks[id]));
+	pthread_mutex_lock(&(all->data->print));
+	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
+	pthread_mutex_unlock(&(all->data->print));
+	if (check_death(all, id))
+		return ;
+	pthread_mutex_lock(&(all->data->print));
+	print_status(get_tstamp(all->time->start), id, "is eating\n");
+	pthread_mutex_unlock(&(all->data->print));
+	ft_usleep(all->par->time_eat);
+	if (check_death(all, id))
+		return ;
+	pthread_mutex_unlock(&(all->data->forks[id -1]));
+	pthread_mutex_unlock(&(all->data->forks[id]));
 }
 
 
@@ -55,12 +58,15 @@ void	*start_routine(void *par)
 	int				id;
 	
 	all = (t_all *)par;
-	all->data->start = get_time();
+	all->time->start = get_time();
 	id = ++(all->id);
 	if (!(id % 2))
 		ft_usleep(all->par->time_eat);
 	while (1)
-		eat(all, id);
+	{
+		ft_eat(all, id);
+		ft_sleep(all, id);
+	}
 	return (NULL);
 }
 
@@ -83,6 +89,6 @@ int	 create_threads(t_data *data, int nb, t_params *par)
 	{
 		pthread_join(data->philo[i], NULL);
 	}
-	write(1, "boubou\n", 7);	
-	return (0);
+	write(1, "boubou\n", 7);
+	return (TRUE);
 }

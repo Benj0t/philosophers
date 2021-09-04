@@ -7,18 +7,25 @@
 # include <sys/time.h>
 
 # define MUTEX pthread_mutex_t
+# define THREAD pthread_t
+# define TRUE 0
+# define FALSE 1
 
 typedef struct	s_data
+{
+	int				dead;
+	int				n_forks;
+	MUTEX			*forks;
+	MUTEX			print;
+	THREAD			*philo;
+}					t_data;
+
+typedef struct	s_time
 {
 	long int		start;
 	long int		reftime;
 	long int		curtime;
-	int				n_forks;
-	int				fid[2];
-	int				dead;
-	MUTEX			*forks;
-	pthread_t		*philo;
-}					t_data;
+}				t_time;
 
 typedef	struct	s_params
 {
@@ -34,6 +41,7 @@ typedef struct	s_all
 	int			id;
 	t_data		*data;
 	t_params	*par;
+	t_time		*time;
 }				t_all;
 
 
