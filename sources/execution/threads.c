@@ -96,6 +96,7 @@ void	*start_routine(void *par)
 	t_all			*all;
 	int				id;
 
+	write(1, "euzp\n", 5);
 	all = (t_all *)par;
 	id = ++all->id;
 	all->data->dead = 0;
@@ -123,6 +124,7 @@ int	 create_threads(t_data *data, int nb, t_params *par, t_philo *philo)
 	all.philo = philo;
 	all.par = par;
 	all.id = 0;
+	write(1, "zuzp\n", 5);
 	while (++i < nb)
 		if (pthread_create(&(all.data->philo[i]), NULL, &start_routine, &all))
 			return (error_message("Cant create enough threads\n"));
