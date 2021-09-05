@@ -62,6 +62,7 @@ typedef struct	s_keep
 	MUTEX		death;
 	t_params	*par;
 }				t_keep;
+
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
 void    		ft_putnbr(int nb);

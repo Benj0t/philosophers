@@ -51,22 +51,26 @@ void	*keeper_routine(void *par)
 
 int		create_keeper(t_all *all, int id)
 {
-	t_keep	keep;
+	t_keep	*keep;
 
-	keep.id = id;
-	keep.end_eat = &(all->philo[id].end_eat);
-	keep.dead = &(all->data->dead);
-	keep.death = all->data->death;
-	keep.par = all->par;
-	if (pthread_create(&(all->philo[id].keeper), NULL, &keeper_routine, &keep))
+	keep = malloc(sizeof(t_keep));
+	if (!keep);
 		return (1);
+	keep->id = id;
+	keep->end_eat = &(all->philo[id - 1].end_eat);
+	keep->dead = &(all->data->dead);
+	keep->death = all->data->death;
+	keep->par = all->par;
+	if (pthread_create(&(all->philo[id - 1].keeper), NULL, &keeper_routine, keep))
+		return (1);
+	free(keep);
 	return (0);
 }
 
 int		ft_eat(t_all *all, int id)
 {
 	all->time->reftime = get_time();
-	all->philo->end_eat = 0;
+	all->philo[id - 1].end_eat = 0;
 	if (create_keeper(all, id))
 		return (error_message("Failed to create keeper\n"));
 	pthread_mutex_lock(&(all->data->forks[id - 1]));
@@ -83,7 +87,7 @@ int		ft_eat(t_all *all, int id)
 	print_status(get_tstamp(all->time->start), id, "is eating\n");
 	pthread_mutex_unlock(&(all->data->print));
 	ft_usleep(all->par->time_eat);
-	all->philo->end_eat = 0;
+	all->philo[id - 1].end_eat = 1;
 	if (check_death(all, id))
 		return (1);
 	pthread_mutex_unlock(&(all->data->forks[id -1]));
@@ -96,11 +100,11 @@ void	*start_routine(void *par)
 	t_all			*all;
 	int				id;
 
-	write(1, "euzp\n", 5);
 	all = (t_all *)par;
-	id = ++all->id;
+	id = ++(all->id);
 	all->data->dead = 0;
 	all->time->start = get_time();
+	write(1, "euzp\n", 5);
 	pthread_mutex_init(&(all->data->death), NULL);
 	pthread_mutex_init(&(all->data->print), NULL);
 	if (!(id % 2))
@@ -124,6 +128,9 @@ int	 create_threads(t_data *data, int nb, t_params *par, t_philo *philo)
 	all.philo = philo;
 	all.par = par;
 	all.id = 0;
+	all.time = malloc(sizeof(t_time));
+	if (!all.time)
+		return (error_message("Malloc crash\n"));
 	write(1, "zuzp\n", 5);
 	while (++i < nb)
 		if (pthread_create(&(all.data->philo[i]), NULL, &start_routine, &all))
