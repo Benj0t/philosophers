@@ -30,22 +30,21 @@ void	ft_sleep(t_all *all, int id)
 void	*keeper_routine(void *par)
 {
 	long int	time;
-	t_keep		keep;
-
+	t_keep *keep;
 
 	time = 0;
-	keep.par = (t_params *)par;
+	keep = (t_keep *)par;
 	//condition a changer, tant qu'il a pas fini de manger;
-	while (!*(keep.end_eat) && time < keep.par->time_die)
+	while (!*(keep->end_eat) && time < keep->par->time_die)
 	{
 		time = get_time();
 		usleep(5);
 	}
-	if (time > keep.par->time_die)
+	if (time > keep->par->time_die)
 	{
-		pthread_mutex_lock(&(keep.death));
-		*(keep.dead) = 1;
-		pthread_mutex_unlock(&(keep.death));
+		pthread_mutex_lock(&(keep->death));
+		*(keep->dead) = 1;
+		pthread_mutex_unlock(&(keep->death));
 	}
 	return (NULL);
 }
@@ -68,7 +67,6 @@ int		ft_eat(t_all *all, int id)
 {
 	all->time->reftime = get_time();
 	all->philo->end_eat = 0;
-//	all->philo[id]->id = id;
 	if (create_keeper(all, id))
 		return (error_message("Failed to create keeper\n"));
 	pthread_mutex_lock(&(all->data->forks[id - 1]));
