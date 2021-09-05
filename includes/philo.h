@@ -26,7 +26,7 @@ typedef struct	s_philo
 {
 	int				id;
 	int				end_eat;
-	THREAD			*keeper;
+	THREAD			keeper;
 }				t_philo;
 
 typedef struct	s_time
@@ -54,12 +54,14 @@ typedef struct	s_all
 	t_time		*time;
 }				t_all;
 
-typedef struct	s_keeper
+typedef struct	s_keep
 {
 	int			id;
+	int			*dead;
 	int			*end_eat;
 	MUTEX		death;
-
+	t_params	*par;
+}				t_keep;
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
 void    		ft_putnbr(int nb);
