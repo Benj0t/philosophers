@@ -3,7 +3,7 @@
 void	philo_die(t_all *all, int id)
 {
 	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
+	print_status(get_tstamp(all->time->start), id, "is dead\n");
 	pthread_mutex_unlock(&(all->data->print));
 	return;
 }
