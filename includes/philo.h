@@ -59,6 +59,8 @@ typedef struct	s_keep
 	int			id;
 	int			*dead;
 	int			*end_eat;
+	long int	start;
+	long int	ref;
 	MUTEX		death;
 	t_params	*par;
 }				t_keep;

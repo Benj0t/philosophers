@@ -34,15 +34,15 @@ void	*keeper_routine(void *par)
 
 	time = 0;
 	keep = (t_keep *)par;
-	//condition a changer, tant qu'il a pas fini de manger;
 	while (!*(keep->end_eat) && time < keep->par->time_die)
 	{
-		time = get_time();
+		time = get_time() - keep->ref;
 		usleep(5);
 	}
 	if (time > keep->par->time_die)
 	{
 		pthread_mutex_lock(&(keep->death));
+		print_status(get_tstamp(keep->start), keep->id, "is dead\n");
 		*(keep->dead) = 1;
 		pthread_mutex_unlock(&(keep->death));
 	}
@@ -54,13 +54,15 @@ int		create_keeper(t_all *all, int id)
 	t_keep	*keep;
 
 	keep = malloc(sizeof(t_keep));
-	if (!keep);
+	if (!keep)
 		return (1);
 	keep->id = id;
 	keep->end_eat = &(all->philo[id - 1].end_eat);
 	keep->dead = &(all->data->dead);
 	keep->death = all->data->death;
 	keep->par = all->par;
+	keep->start = all->time->start;
+	keep->ref = all->time->reftime;
 	if (pthread_create(&(all->philo[id - 1].keeper), NULL, &keeper_routine, keep))
 		return (1);
 	free(keep);
