@@ -18,25 +18,29 @@ void	init_mutex(MUTEX *arr, int len)
 		pthread_mutex_init(&(arr[i++]), NULL);
 }
 
-int		init_data(t_params *par, t_data *data)
+int		init_data(t_params *par, t_data *data, t_philo **philo)
 {
-
-	data->n_forks = par->n_philos;
+	*philo = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
+	if (!philo)
+		return (1);
 	data->philo = (THREAD *)malloc(sizeof(THREAD) * (par->n_philos));
 	if (!data->philo)
 		return (1);
-	data->forks = (MUTEX *)malloc(sizeof(MUTEX) * (data->n_forks));
+	data->forks = (MUTEX *)malloc(sizeof(MUTEX) * (par->n_philos));
 	if (!data->forks)
 		return (1);
-	init_mutex(data->forks, data->n_forks);
+	init_mutex(data->forks, par->n_philos);
 	pthread_mutex_init(&(data->print), NULL);
+	philo[0]->end_eat = 0;
 	return (0);
 }
 
 int		philosophers(t_params *par, t_data *data)
 {
-	if (init_data(par, data))
+	t_philo	*philo;
+	philo = NULL;
+	if (init_data(par, data, &philo))
 		return (free_data(data));
-	create_threads(data, par->n_philos, par);
+	create_threads(data, par->n_philos, par, philo);
 	return (0);
 }
