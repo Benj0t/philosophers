@@ -11,14 +11,23 @@
 # define TRUE 0
 # define FALSE 1
 
+// REFACTO : Malloc une struct par philo dans all et mettre les single data a part !
+
 typedef struct	s_data
 {
 	int				dead;
-	int				n_forks;
 	MUTEX			*forks;
 	MUTEX			print;
+	MUTEX			death;
 	THREAD			*philo;
 }					t_data;
+
+typedef struct	s_philo
+{
+	int				id;
+	int				end_eat;
+	THREAD			*keeper;
+}				t_philo;
 
 typedef struct	s_time
 {
@@ -39,11 +48,17 @@ typedef	struct	s_params
 typedef struct	s_all
 {
 	int			id;
+	t_philo		*philo;
 	t_data		*data;
 	t_params	*par;
 	t_time		*time;
 }				t_all;
 
+typedef struct	s_keeper
+{
+	int			id;
+	int			*end_eat;
+	MUTEX		death;
 
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
@@ -57,7 +72,7 @@ unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
 int             parser(int argc, char **argv, t_params *par);
 int				philosophers(t_params *par, t_data *data);
-int			    create_threads(t_data *data, int nb, t_params *par);
+int			    create_threads(t_data *data, int nb, t_params *par, t_philo *philo);
 int             error_message(char *str);
 
 #endif

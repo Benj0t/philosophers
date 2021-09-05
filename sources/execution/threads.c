@@ -1,5 +1,4 @@
 #include "philo.h"
-//eating -> sleeping -> thinking -> beg
 
 void	philo_die(t_all *all, int id)
 {
@@ -28,9 +27,45 @@ void	ft_sleep(t_all *all, int id)
 	pthread_mutex_unlock(&(all->data->print));
 }
 
+void	keeper_routine(void *all)
+{
+	long int time;
+
+	time = 0;
+	/* condition a changer, tant qu'il a pas fini de manger;
+	while (time < all->data->time_die)
+	{
+		time = get_time();
+		usleep(5);
+	}
+	*/
+	if (time > all->par->time_die)
+	{
+		pthread_mutex_lock(&(all->data->death));
+		all->data->dead = 1;
+		pthread_mutex_unlock(&(all->data->death));
+	}
+}
+
+int		create_keeper(t_all *all, int id)
+{
+	t_keep	keep;
+
+	keep.id = id;
+	keep.end_eat = &(all->philo[id]->end_eat);
+	keep.death = all->data->death;
+	if (pthread_create(&(all->data->philo)[i], NULL, &keeper_routine, &keep))
+		return (1);
+	return (0);
+}
+
 void	ft_eat(t_all *all, int id)
 {
 	all->time->reftime = get_time();
+	all->philo->end_eat = 0;
+	t_all->philo[id]->id = id;
+	if (create_keeper(all, id))
+		return (error_message("Failed to create keeper\n"));
 	pthread_mutex_lock(&(all->data->forks[id - 1]));
 	pthread_mutex_lock(&(all->data->print));
 	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
@@ -45,21 +80,24 @@ void	ft_eat(t_all *all, int id)
 	print_status(get_tstamp(all->time->start), id, "is eating\n");
 	pthread_mutex_unlock(&(all->data->print));
 	ft_usleep(all->par->time_eat);
+	all->philo->end_eat = 0;
 	if (check_death(all, id))
 		return ;
 	pthread_mutex_unlock(&(all->data->forks[id -1]));
 	pthread_mutex_unlock(&(all->data->forks[id]));
 }
 
-
 void	*start_routine(void *par)
 {
 	t_all			*all;
 	int				id;
-	
+
 	all = (t_all *)par;
+	id = ++all->id;
+	all->data->dead = 0;
 	all->time->start = get_time();
-	id = ++(all->id);
+	pthread_mutex_init(&(all->data->death), NULL);
+	pthread_mutex_init(&(all->data->print), NULL);
 	if (!(id % 2))
 		ft_usleep(all->par->time_eat);
 	while (1)
@@ -70,25 +108,21 @@ void	*start_routine(void *par)
 	return (NULL);
 }
 
-int	 create_threads(t_data *data, int nb, t_params *par)
+int	 create_threads(t_data *data, int nb, t_params *par, t_philo *philo)
 {
 	int i;
 	t_all all;
 
 	i = -1;
 	all.data = data;
+	all.philo = philo;
 	all.par = par;
 	all.id = 0;
 	while (++i < nb)
-	{
 		if (pthread_create(&(data->philo)[i], NULL, &start_routine, &all))
 			return (error_message("Cant create enough threads\n"));
-	}
 	i = -1;
 	while (++i < nb)
-	{
 		pthread_join(data->philo[i], NULL);
-	}
-	write(1, "boubou\n", 7);
 	return (TRUE);
 }
