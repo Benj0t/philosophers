@@ -62,6 +62,7 @@ typedef struct	s_keep
 	long int	start;
 	long int	ref;
 	MUTEX		death;
+	MUTEX		print;
 	t_params	*par;
 }				t_keep;
 

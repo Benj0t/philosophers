@@ -39,11 +39,17 @@ void	*keeper_routine(void *par)
 		time = get_time() - keep->ref;
 		usleep(5);
 	}
+	if (*(keep->end_eat) == 1)
+	{
+		printf("ALLO ALLO\n");
+	}
 	if (time > keep->par->time_die)
 	{
 		pthread_mutex_lock(&(keep->death));
-		print_status(get_tstamp(keep->start), keep->id, "is dead\n");
 		*(keep->dead) = 1;
+		pthread_mutex_lock(&(keep->print));
+		print_status(get_tstamp(keep->start), keep->id, "is dead\n");
+		pthread_mutex_unlock(&(keep->print));
 		pthread_mutex_unlock(&(keep->death));
 	}
 	return (NULL);
@@ -56,15 +62,17 @@ int		create_keeper(t_all *all, int id)
 	keep = malloc(sizeof(t_keep));
 	if (!keep)
 		return (1);
-	keep->id = id;
 	keep->end_eat = &(all->philo[id - 1].end_eat);
 	keep->dead = &(all->data->dead);
 	keep->death = all->data->death;
 	keep->par = all->par;
 	keep->start = all->time->start;
 	keep->ref = all->time->reftime;
+	keep->id = id;
+	keep->print = all->data->print;
 	if (pthread_create(&(all->philo[id - 1].keeper), NULL, &keeper_routine, keep))
 		return (1);
+	pthread_join(all->philo[id - 1].keeper, NULL);
 	free(keep);
 	return (0);
 }
@@ -106,7 +114,6 @@ void	*start_routine(void *par)
 	id = ++(all->id);
 	all->data->dead = 0;
 	all->time->start = get_time();
-	write(1, "euzp\n", 5);
 	pthread_mutex_init(&(all->data->death), NULL);
 	pthread_mutex_init(&(all->data->print), NULL);
 	if (!(id % 2))
@@ -133,7 +140,6 @@ int	 create_threads(t_data *data, int nb, t_params *par, t_philo *philo)
 	all.time = malloc(sizeof(t_time));
 	if (!all.time)
 		return (error_message("Malloc crash\n"));
-	write(1, "zuzp\n", 5);
 	while (++i < nb)
 		if (pthread_create(&(all.data->philo[i]), NULL, &start_routine, &all))
 			return (error_message("Cant create enough threads\n"));
