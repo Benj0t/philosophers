@@ -56,14 +56,13 @@ typedef struct	s_all
 
 typedef struct	s_keep
 {
-	int			id;
 	int			*dead;
-	int			*end_eat;
 	long int	start;
 	long int	ref;
 	MUTEX		death;
 	MUTEX		print;
 	t_params	*par;
+	t_philo		philo;
 }				t_keep;
 
 void    		print_status(long int timestamp, int id, char *str);

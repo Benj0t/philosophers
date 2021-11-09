@@ -34,12 +34,13 @@ void	*keeper_routine(void *par)
 
 	time = 0;
 	keep = (t_keep *)par;
-	while (!*(keep->end_eat) && time < keep->par->time_die)
+	while (!keep->philo.end_eat && time < keep->par->time_die)
 	{
 		time = get_time() - keep->ref;
 		usleep(5);
 	}
-	if (*(keep->end_eat) == 1)
+	printf("ALLO: %d | TIME %ld < 410\n", keep->philo.end_eat, time);
+	if (keep->philo.end_eat == 1)
 	{
 		printf("ALLO ALLO\n");
 	}
@@ -48,12 +49,14 @@ void	*keeper_routine(void *par)
 		pthread_mutex_lock(&(keep->death));
 		*(keep->dead) = 1;
 		pthread_mutex_lock(&(keep->print));
-		print_status(get_tstamp(keep->start), keep->id, "is dead\n");
+		print_status(get_tstamp(keep->start), keep->philo.id, "is dead\n");
 		pthread_mutex_unlock(&(keep->print));
 		pthread_mutex_unlock(&(keep->death));
 	}
 	return (NULL);
 }
+
+//MUTEX FOR EACH FORK + TIME_EAT TO CALCULATE
 
 int		create_keeper(t_all *all, int id)
 {
@@ -62,14 +65,13 @@ int		create_keeper(t_all *all, int id)
 	keep = malloc(sizeof(t_keep));
 	if (!keep)
 		return (1);
-	keep->end_eat = &(all->philo[id - 1].end_eat);
 	keep->dead = &(all->data->dead);
 	keep->death = all->data->death;
 	keep->par = all->par;
 	keep->start = all->time->start;
 	keep->ref = all->time->reftime;
-	keep->id = id;
 	keep->print = all->data->print;
+	keep->philo = all->philo[id - 1];
 	if (pthread_create(&(all->philo[id - 1].keeper), NULL, &keeper_routine, keep))
 		return (1);
 	pthread_join(all->philo[id - 1].keeper, NULL);
@@ -81,8 +83,8 @@ int		ft_eat(t_all *all, int id)
 {
 	all->time->reftime = get_time();
 	all->philo[id - 1].end_eat = 0;
-	if (create_keeper(all, id))
-		return (error_message("Failed to create keeper\n"));
+	//if (create_keeper(all, id))
+	//	return (error_message("Failed to create keeper\n"));
 	pthread_mutex_lock(&(all->data->forks[id - 1]));
 	pthread_mutex_lock(&(all->data->print));
 	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");

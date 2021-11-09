@@ -20,6 +20,10 @@ void	init_mutex(MUTEX *arr, int len)
 
 int		init_data(t_params *par, t_data *data, t_philo **philo)
 {
+	int i;
+
+	i = 0;
+	//ADD FREE_PARAMS BEFORE RET;
 	*philo = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
 	if (!philo)
 		return (1);
@@ -31,7 +35,6 @@ int		init_data(t_params *par, t_data *data, t_philo **philo)
 		return (1);
 	init_mutex(data->forks, par->n_philos);
 	pthread_mutex_init(&(data->print), NULL);
-	philo[0]->end_eat = 0;
 	return (0);
 }
 
