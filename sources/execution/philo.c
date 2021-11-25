@@ -38,9 +38,10 @@ int		init_data(t_params *par, t_data *data, t_philo **philo)
 	return (0);
 }
 
-int		philosophers(t_params *par, t_data *data)
+int		philosophers(t_params par)
 {
 	t_philo	*philo;
+	
 	philo = NULL;
 	if (init_data(par, data, &philo))
 		return (free_data(data));

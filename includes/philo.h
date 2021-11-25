@@ -13,57 +13,48 @@
 
 // REFACTO : Malloc une struct par philo dans all et mettre les single data a part !
 
-typedef struct	s_data
+typedef struct		s_params
 {
-	int				dead;
-	MUTEX			*forks;
-	MUTEX			print;
-	MUTEX			death;
-	THREAD			*philo;
-}					t_data;
+	int				n_philos;
+	int				time_die;
+	int				time_eat;
+	int				time_sleep;
+	int				n_times_eat;
+}					t_params;
 
-typedef struct	s_philo
-{
-	int				id;
-	int				end_eat;
-	THREAD			keeper;
-}				t_philo;
-
-typedef struct	s_time
+typedef struct		s_time
 {
 	long int		start;
 	long int		reftime;
 	long int		curtime;
-}				t_time;
+}					t_time;
 
-typedef	struct	s_params
+typedef struct		s_philo
 {
-	int			n_philos;
-	int			time_die;
-	int			time_eat;
-	int			time_sleep;
-	int			n_times_eat;
-}				t_params;
+	THREAD			philo;
+	int				id;
+	t_time			time;
 
-typedef struct	s_all
-{
-	int			id;
-	t_philo		*philo;
-	t_data		*data;
-	t_params	*par;
-	t_time		*time;
-}				t_all;
+	MUTEX			*forks;
+	MUTEX			*print;
+	MUTEX			*death;
+	//PIERROT
+	MUTEX			mutex_last_eat;
+	MUTEX			*mutex_eat_x_time;
+	//PIERROT
 
-typedef struct	s_keep
-{
-	int			*dead;
-	long int	start;
-	long int	ref;
-	MUTEX		death;
-	MUTEX		print;
-	t_params	*par;
-	t_philo		philo;
-}				t_keep;
+	long int		start;
+	long int		reftime;
+	long int		curtime;
+
+	t_params		par;
+
+	int				*dead;
+	int				eat_index;
+	int				id;
+	int				end_eat;
+}					t_philo;
+
 
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
@@ -76,7 +67,7 @@ int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
 int             parser(int argc, char **argv, t_params *par);
-int				philosophers(t_params *par, t_data *data);
+int				philosophers(t_params par);
 int			    create_threads(t_data *data, int nb, t_params *par, t_philo *philo);
 int             error_message(char *str);
 
