@@ -34,27 +34,31 @@ typedef struct		s_philo
 	THREAD			philo;
 	int				id;
 	t_time			time;
-
-	MUTEX			*forks;
-	MUTEX			*print;
+	MUTEX			*left;
+	MUTEX			*right;
 	MUTEX			*death;
-	//PIERROT
-	MUTEX			mutex_last_eat;
-	MUTEX			*mutex_eat_x_time;
-	//PIERROT
+	MUTEX			*print;
+	MUTEX			*eat_times;
 
-	long int		start;
-	long int		reftime;
-	long int		curtime;
-
-	t_params		par;
-
+	t_params		*par;
 	int				*dead;
 	int				eat_index;
-	int				id;
 	int				end_eat;
 }					t_philo;
 
+typedef	struct		s_all
+{
+	t_philo			*philo;
+	t_params		par;
+	t_time			time;
+	int				dead;
+
+	MUTEX			print;
+	MUTEX			death;
+	// VV PIERROT VV
+	MUTEX			last_eat; // ??
+	MUTEX			eat_times;
+}					t_all;
 
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
@@ -67,7 +71,7 @@ int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
 int             parser(int argc, char **argv, t_params *par);
-int				philosophers(t_params par);
+int				philosophers(t_params *par);
 int			    create_threads(t_data *data, int nb, t_params *par, t_philo *philo);
 int             error_message(char *str);
 

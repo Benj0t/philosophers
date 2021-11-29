@@ -9,42 +9,58 @@ int		free_data(t_data *data)
 	return (1);
 }
 
-void	init_mutex(MUTEX *arr, int len)
+void	init_mutex(t_all *all)
 {
-	int i;
-
-	i = 0;
-	while (i < len)
-		pthread_mutex_init(&(arr[i++]), NULL);
+	pthread_mutex_init(all->print, NULL);
+	pthread_mutex_init(all->eat_times, NULL);
+	pthread_mutex_init(all->last_eat, NULL);
+	pthread_mutex_init(all->death, NULL);
 }
 
-int		init_data(t_params *par, t_data *data, t_philo **philo)
+void	assign_data(t_all *all, int i)
+{
+	all->p[i]->id = i;
+	all->p[i]->par = par;
+	all->p[i]->dead = &(all->death);
+	all->p[i]->print = &(all->print);
+	all->p[i]->death = &(all->death);
+	all->p[i]->eat_times = &(all->eat_times);
+}
+
+int		init_data(t_all *all, t_params *par, t_philo **p)
 {
 	int i;
 
 	i = 0;
 	//ADD FREE_PARAMS BEFORE RET;
-	*philo = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
-	if (!philo)
-		return (1);
-	data->philo = (THREAD *)malloc(sizeof(THREAD) * (par->n_philos));
-	if (!data->philo)
-		return (1);
-	data->forks = (MUTEX *)malloc(sizeof(MUTEX) * (par->n_philos));
-	if (!data->forks)
-		return (1);
-	init_mutex(data->forks, par->n_philos);
-	pthread_mutex_init(&(data->print), NULL);
+	*p = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
+	if (!p)
+		return (free_data(p));
+	while (i < par->n_philos)
+	{
+		assign_data(all, i);
+		pthread_mutex_init(&(*(p[i].left), NULL); // Simplifier arg ?
+		if (i == par->n_philos - 1)
+			*p[i].right = p[0].left;
+		else
+			*p[i].right = p[i + 1].left;
+		i++;
+	}
 	return (0);
 }
 
-int		philosophers(t_params par)
+int		philosophers(t_params *par)
 {
-	t_philo	*philo;
-	
-	philo = NULL;
-	if (init_data(par, data, &philo))
-		return (free_data(data));
-	create_threads(data, par->n_philos, par, philo);
+	t_all	*all;
+
+	all = malloc(sizeof(t_all));
+	all->death = 0;
+	all->par = par;
+	init_mutex(all);
+	if (!all)
+		return (1);
+	if (init_data(all, &par, &(all->philo)))
+		return (free_data());
+	create_threads(par->n_philos, par, philo);
 	return (0);
 }

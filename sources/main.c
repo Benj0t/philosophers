@@ -23,6 +23,6 @@ int	main(int argc, char **argv)
 	if (parser(argc, argv, &par))
 		return(error_message("Error\nWrong arguments"));
 //    printf("\t//ARGS//\nn_philo: %d\ntime_die: %d\ntime_eat: %d\ntime_sleep: %d\nn_times_eat: %d\n\t//ARGS//\n", par.n_philos, par.time_die, par.time_eat, par.time_sleep, par.n_times_eat);
-  if (philosophers(par))
+  if (philosophers(&par))
 		return(error_message("Error\nSomething went wrong during execution"));
 }
