@@ -4,12 +4,12 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <stdbool.h>
+# include <signal.h>
 # include <sys/time.h>
 
 # define MUTEX pthread_mutex_t
 # define THREAD pthread_t
-# define TRUE 0
-# define FALSE 1
 
 // REFACTO : Malloc une struct par philo dans all et mettre les single data a part !
 
@@ -31,14 +31,14 @@ typedef struct		s_time
 
 typedef struct		s_philo
 {
-	THREAD			philo;
+	THREAD			thread;
 	int				id;
 	t_time			time;
-	MUTEX			*left;
-	MUTEX			*right;
+	MUTEX			left;
+	MUTEX			right;
 	MUTEX			*death;
 	MUTEX			*print;
-	MUTEX			*eat_times;
+	int				eat_times;
 
 	t_params		*par;
 	int				*dead;
@@ -48,7 +48,7 @@ typedef struct		s_philo
 
 typedef	struct		s_all
 {
-	t_philo			*philo;
+	t_philo			*p;
 	t_params		par;
 	t_time			time;
 	int				dead;
@@ -56,7 +56,7 @@ typedef	struct		s_all
 	MUTEX			print;
 	MUTEX			death;
 	// VV PIERROT VV
-	MUTEX			last_eat; // ??
+	MUTEX			last_eat;
 	MUTEX			eat_times;
 }					t_all;
 
@@ -72,7 +72,7 @@ unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);
 int             parser(int argc, char **argv, t_params *par);
 int				philosophers(t_params *par);
-int			    create_threads(t_data *data, int nb, t_params *par, t_philo *philo);
+int			    create_threads(int nb, t_all *all);
 int             error_message(char *str);
 
 #endif
