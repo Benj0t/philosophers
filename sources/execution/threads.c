@@ -1,152 +1,146 @@
 #include "philo.h"
 
-void	philo_die(t_all *all, int id)
+void	philo_die(t_philo *philo)
 {
-	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "is dead\n");
-	pthread_mutex_unlock(&(all->data->print));
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "is dead\n");
+	pthread_mutex_unlock(philo->print);
 	return;
 }
 
-int		check_death(t_all *all, int id)
+int		check_death(t_philo *philo)
 {
-	all->time->curtime = get_time();
-	if ((all->time->curtime - all->time->reftime) > all->par->time_die)
+	philo->time.curtime = get_time();
+	if ((philo->time.curtime - philo->time.reftime) > philo->par->time_die)
 	{
-			philo_die(all, id);
-			return (FALSE);
-	}
-	return (TRUE);
-}
-
-void	ft_sleep(t_all *all, int id)
-{
-	ft_usleep(all->par->time_sleep);
-	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "is sleeping\n");
-	pthread_mutex_unlock(&(all->data->print));
-}
-
-void	*keeper_routine(void *par)
-{
-	long int	time;
-	t_keep *keep;
-
-	time = 0;
-	keep = (t_keep *)par;
-	while (!keep->philo.end_eat && time < keep->par->time_die)
-	{
-		time = get_time() - keep->ref;
-		usleep(5);
-	}
-	printf("ALLO: %d | TIME %ld < 410\n", keep->philo.end_eat, time);
-	if (keep->philo.end_eat == 1)
-	{
-		printf("ALLO ALLO\n");
-	}
-	if (time > keep->par->time_die)
-	{
-		pthread_mutex_lock(&(keep->death));
-		*(keep->dead) = 1;
-		pthread_mutex_lock(&(keep->print));
-		print_status(get_tstamp(keep->start), keep->philo.id, "is dead\n");
-		pthread_mutex_unlock(&(keep->print));
-		pthread_mutex_unlock(&(keep->death));
-	}
-	return (NULL);
-}
-
-//MUTEX FOR EACH FORK + TIME_EAT TO CALCULATE
-
-int		create_keeper(t_all *all, int id)
-{
-	t_keep	*keep;
-
-	keep = malloc(sizeof(t_keep));
-	if (!keep)
+		philo_die(philo);
 		return (1);
-	keep->dead = &(all->data->dead);
-	keep->death = all->data->death;
-	keep->par = all->par;
-	keep->start = all->time->start;
-	keep->ref = all->time->reftime;
-	keep->print = all->data->print;
-	keep->philo = all->philo[id - 1];
-	if (pthread_create(&(all->philo[id - 1].keeper), NULL, &keeper_routine, keep))
-		return (1);
-	pthread_join(all->philo[id - 1].keeper, NULL);
-	free(keep);
+	}
 	return (0);
 }
 
-int		ft_eat(t_all *all, int id)
+void	ft_sleep(t_philo *philo)
 {
-	all->time->reftime = get_time();
-	all->philo[id - 1].end_eat = 0;
-	//if (create_keeper(all, id))
-	//	return (error_message("Failed to create keeper\n"));
-	pthread_mutex_lock(&(all->data->forks[id - 1]));
-	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
-	pthread_mutex_unlock(&(all->data->print));
-	pthread_mutex_lock(&(all->data->forks[id]));
-	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "has taken a fork\n");
-	pthread_mutex_unlock(&(all->data->print));
-	if (check_death(all, id))
-		return (1);
-	pthread_mutex_lock(&(all->data->print));
-	print_status(get_tstamp(all->time->start), id, "is eating\n");
-	pthread_mutex_unlock(&(all->data->print));
-	ft_usleep(all->par->time_eat);
-	all->philo[id - 1].end_eat = 1;
-	if (check_death(all, id))
-		return (1);
-	pthread_mutex_unlock(&(all->data->forks[id -1]));
-	pthread_mutex_unlock(&(all->data->forks[id]));
+	ft_usleep(philo->par->time_sleep);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "is sleeping\n");
+	pthread_mutex_unlock(philo->print);
+}
+// TEMPS DERNIER MANGER = ref pour le surveillant
+int		ft_eat_left(t_philo *philo)
+{
+	philo->time.reftime = get_time();
+	pthread_mutex_lock(&philo->left);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork\n");
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->right);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork\n");
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "is eating\n");
+	pthread_mutex_unlock(philo->print);
+	ft_usleep(philo->par->time_eat);
+	pthread_mutex_unlock(&philo->left);
+	pthread_mutex_unlock(philo->right);
+	philo->last_eat = get_time();
+	philo->eat_index++;
+	return (0);
+}
+
+int		ft_eat_right(t_philo *philo)
+{
+	philo->time.reftime = get_time();
+	pthread_mutex_lock(philo->right);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork\n");
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(&philo->left);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork\n");
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "is eating\n");
+	pthread_mutex_unlock(philo->print);
+	ft_usleep(philo->par->time_eat);
+	pthread_mutex_unlock(&philo->left);
+	pthread_mutex_unlock(philo->right);
+	philo->last_eat = get_time();
+	philo->eat_index++;
 	return (0);
 }
 
 void	*start_routine(void *par)
 {
-	t_all			*all;
-	int				id;
+	t_philo			*philo;
+	sig_atomic_t	ded;
 
-	all = (t_all *)par;
-	id = ++(all->id);
-	all->data->dead = 0;
-	all->time->start = get_time();
-	pthread_mutex_init(&(all->data->death), NULL);
-	pthread_mutex_init(&(all->data->print), NULL);
-	if (!(id % 2))
-		ft_usleep(all->par->time_eat);
-	while (1)
+	philo = (t_philo *)par;
+	philo->eat_times = 0;
+	ded = 0;
+	pthread_mutex_lock(philo->print);
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->print);
+	pthread_mutex_unlock(philo->print);
+	philo->time.start = get_time();
+	philo->last_eat = philo->time.start;
+	while (!ded)
 	{
-		if (ft_eat(all, id))
-			return (NULL);
-		ft_sleep(all, id);
+		if (philo->par->n_times_eat == -1 || philo->eat_index < philo->par->n_times_eat)
+		{
+			if (philo->id % 2)
+			{
+				if (ft_eat_right(philo))
+					return (NULL);
+			}
+			else
+				if (ft_eat_left(philo))
+					return (NULL);
+			ft_sleep(philo);
+		}
+		pthread_mutex_lock(philo->death);
+		ded = *philo->dead;
+		pthread_mutex_unlock(philo->death);
 	}
 	return (NULL);
 }
 
-int	 create_threads(t_data *data, int nb, t_params *par, t_philo *philo)
+void	*supervisor(void *par) //il check une fois puis stop
+{
+	t_all *all;
+	int		i;
+
+	all = (t_all *)par;
+	i = 0;
+	ft_putstr("I want to go in\n");
+	while (i < all->par.n_philos)
+	{
+		if (get_tstamp(all->p[i].last_eat) > all->par.time_die)
+		{
+			pthread_mutex_lock(&all->death);
+			all->dead = 1;
+			pthread_mutex_unlock(&all->death);
+			return (NULL);
+		}
+		i++;
+	}
+	ft_putstr("Im out\n");
+	return (NULL);
+}
+
+int	 create_threads(int nb, t_all *all)
 {
 	int i;
-	t_all all;
 
 	i = -1;
-	all.data = data;
-	all.philo = philo;
-	all.par = par;
-	all.id = 0;
-	all.time = malloc(sizeof(t_time));
-	if (!all.time)
-		return (error_message("Malloc crash\n"));
 	while (++i < nb)
-		if (pthread_create(&(all.data->philo[i]), NULL, &start_routine, &all))
+		if (pthread_create(&(all->p[i].thread), NULL, &start_routine, &(all->p[i])))
 			return (error_message("Cant create enough threads\n"));
 	i = -1;
+	pthread_create(&(all->supervisor), NULL, &supervisor, all);
 	while (++i < nb)
-		pthread_join(all.data->philo[i], NULL);
-	return (TRUE);
+		pthread_join(all->p[i].thread, NULL);
+	pthread_join(all->supervisor, NULL);
+	return (0);
 }
