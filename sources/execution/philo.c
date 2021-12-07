@@ -4,7 +4,6 @@ void	init_mutex(t_all *all)
 {
 	pthread_mutex_init(&all->print, NULL);
 	pthread_mutex_init(&all->eat_times, NULL);
-	pthread_mutex_init(&all->last_eat, NULL);
 	pthread_mutex_init(&all->death, NULL);
 }
 
@@ -33,7 +32,7 @@ int		init_data(t_all *all, t_params *par, t_philo **p)
 	while (i < par->n_philos)
 	{
 		assign_data(all, i);
-		pthread_mutex_init(p[i]->left, NULL); // Simplifier arg ?
+		pthread_mutex_init(&p[i]->left, NULL); // Simplifier arg ?
 		if (i == par->n_philos - 1)
 			p[i]->right = p[0]->left;
 		else
@@ -49,7 +48,7 @@ int		philosophers(t_params *par)
 
 	all = malloc(sizeof(t_all));
 	all->dead = 0;
-	all->eat_times = 0;
+	all->n_eat_times = 0;
 	all->par = *par;
 	init_mutex(all);
 	if (!all)
