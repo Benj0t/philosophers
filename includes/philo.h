@@ -24,26 +24,29 @@ typedef struct		s_params
 
 typedef struct		s_time
 {
-	long int		start;
-	long int		reftime;
-	long int		curtime;
+	long int		start; // debut du thread
+	long int		reftime; // commence a manger
+	long int		curtime; // heure actuelle
 }					t_time;
 
 typedef struct		s_philo
 {
+	t_params		*par;
+
 	THREAD			thread;
 	int				id;
 	t_time			time;
+	
 	MUTEX			left;
 	MUTEX			right;
 	MUTEX			*death;
 	MUTEX			*print;
-	int				eat_times;
+	MUTEX			*eat_times;
 
-	t_params		*par;
+	int				*n_eat_times;
+	unsigned int	last_eat; // FINI DE MANGER
 	int				*dead;
 	int				eat_index;
-	int				end_eat;
 }					t_philo;
 
 typedef	struct		s_all
@@ -52,12 +55,12 @@ typedef	struct		s_all
 	t_params		par;
 	t_time			time;
 	int				dead;
+	int				n_eat_times;
 
 	MUTEX			print;
 	MUTEX			death;
-	// VV PIERROT VV
-	MUTEX			last_eat;
 	MUTEX			eat_times;
+	THREAD			supervisor;
 }					t_all;
 
 void    		print_status(long int timestamp, int id, char *str);

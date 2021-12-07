@@ -15,7 +15,10 @@ void	assign_data(t_all *all, int i)
 	all->p[i].death = &(all->death);
 	all->p[i].print = &(all->print);
 	all->p[i].death = &(all->death);
+	all->p[i].n_eat_times = &(all->n_eat_times);
 	all->p[i].eat_times = &(all->eat_times);
+	all->p[i].eat_index = 0;
+	all->p[i].last_eat = 0;
 }
 
 int		init_data(t_all *all, t_params *par, t_philo **p)
@@ -46,6 +49,7 @@ int		philosophers(t_params *par)
 
 	all = malloc(sizeof(t_all));
 	all->dead = 0;
+	all->eat_times = 0;
 	all->par = *par;
 	init_mutex(all);
 	if (!all)
