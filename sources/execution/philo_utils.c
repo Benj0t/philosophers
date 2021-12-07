@@ -1,9 +1,9 @@
 #include "philo.h"
 
-long int    get_tstamp(long int ref)
+long int    get_tstamp(unsigned int ref)
 {
     struct timeval      val;
-    long int            time;
+    unsigned int            time;
 
     gettimeofday(&val, NULL);
     time = (val.tv_sec * 1000) + (val.tv_usec / 1000);

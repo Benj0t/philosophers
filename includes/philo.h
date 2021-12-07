@@ -64,13 +64,13 @@ typedef	struct		s_all
 }					t_all;
 
 void			ft_putstr(char *str);
-void    		print_status(long int timestamp, int id, char *str);
+void    		print_status(long int timestamp, int id, char *str, int dead);
 void   		 	ft_putlnbr(long int nb);
 void    		ft_putnbr(int nb);
 void		    ft_putchar(char c);
 long int    	get_time();
 void  	    	ft_usleep(long int time);
-long int	    get_tstamp(long int ref);
+long int	    get_tstamp(unsigned int ref);
 int 	        ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
 int             is_digit(char *str);

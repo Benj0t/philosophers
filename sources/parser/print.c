@@ -19,11 +19,14 @@ void    ft_putlnbr(long int nb)
     ft_putchar(nb % 10 + 48);
 }
 
-void    print_status(long int timestamp, int id, char *str)
+void    print_status(long int timestamp, int id, char *str, int dead)
 {
 	int i;
 
 	i = 0;
+    (void)dead;
+    if (dead == 1)
+        return;
     ft_putlnbr(timestamp);
     write(1, " ", 1);
     ft_putnbr(id);
