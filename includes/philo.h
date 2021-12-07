@@ -38,7 +38,7 @@ typedef struct		s_philo
 	t_time			time;
 	
 	MUTEX			left;
-	MUTEX			right;
+	MUTEX			*right;
 	MUTEX			*death;
 	MUTEX			*print;
 	MUTEX			*eat_times;

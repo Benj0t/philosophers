@@ -18,6 +18,7 @@ void	assign_data(t_all *all, int i)
 	all->p[i].eat_times = &(all->eat_times);
 	all->p[i].eat_index = 0;
 	all->p[i].last_eat = 0;
+	all->p[i].right = NULL;
 }
 
 int		init_data(t_all *all, t_params *par)
@@ -34,9 +35,9 @@ int		init_data(t_all *all, t_params *par)
 		assign_data(all, i);
 		pthread_mutex_init(&all->p[i].left, NULL); // Simplifier arg ?
 		if (i == par->n_philos - 1)
-			all->p[i].right = all->p[0].left;
+			all->p[i].right = &all->p[0].left;
 		else
-			all->p[i].right = all->p[i + 1].left;
+			all->p[i].right = &all->p[i + 1].left;
 		i++;
 	}
 	return (0);
