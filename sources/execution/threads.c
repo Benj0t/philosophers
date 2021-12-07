@@ -79,7 +79,6 @@ void	*start_routine(void *par)
 	philo = (t_philo *)par;
 	philo->eat_times = 0;
 	ded = 0;
-	philo->dead = 0;
 	pthread_mutex_lock(philo->print);
 	pthread_mutex_unlock(philo->print);
 	pthread_mutex_lock(philo->print);
@@ -107,13 +106,14 @@ void	*start_routine(void *par)
 	return (NULL);
 }
 
-void	*supervisor(void *par)
+void	*supervisor(void *par) //il check une fois puis stop
 {
 	t_all *all;
 	int		i;
 
 	all = (t_all *)par;
 	i = 0;
+	ft_putstr("I want to go in\n");
 	while (i < all->par.n_philos)
 	{
 		if (get_tstamp(all->p[i].last_eat) > all->par.time_die)
@@ -125,6 +125,7 @@ void	*supervisor(void *par)
 		}
 		i++;
 	}
+	ft_putstr("Im out\n");
 	return (NULL);
 }
 
@@ -137,7 +138,7 @@ int	 create_threads(int nb, t_all *all)
 		if (pthread_create(&(all->p[i].thread), NULL, &start_routine, &(all->p[i])))
 			return (error_message("Cant create enough threads\n"));
 	i = -1;
-	pthread_create(&(all->supervisor), NULL, &supervisor, &all);
+	pthread_create(&(all->supervisor), NULL, &supervisor, all);
 	while (++i < nb)
 		pthread_join(all->p[i].thread, NULL);
 	pthread_join(all->supervisor, NULL);

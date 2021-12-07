@@ -13,7 +13,7 @@ void	assign_data(t_all *all, int i)
 	all->p[i].par = &all->par;
 	all->p[i].death = &(all->death);
 	all->p[i].print = &(all->print);
-	all->p[i].death = &(all->death);
+	all->p[i].dead = &(all->dead);
 	all->p[i].n_eat_times = &(all->n_eat_times);
 	all->p[i].eat_times = &(all->eat_times);
 	all->p[i].eat_index = 0;
@@ -56,7 +56,6 @@ int		philosophers(t_params *par)
 		return (1);
 	if (init_data(all, par))
 		return (1); // FREE DES TRUCS
-	ft_putstr("after init data\n");
 	create_threads(par->n_philos, all);
 	return (0);
 }
