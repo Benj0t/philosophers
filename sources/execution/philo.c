@@ -20,23 +20,23 @@ void	assign_data(t_all *all, int i)
 	all->p[i].last_eat = 0;
 }
 
-int		init_data(t_all *all, t_params *par, t_philo **p)
+int		init_data(t_all *all, t_params *par)
 {
 	int i;
 
 	i = 0;
 	//ADD FREE_PARAMS BEFORE RET;
-	*p = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
-	if (!p)
+	all->p = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
+	if (!all->p)
 		return (1); // FREE DES TRUCS
 	while (i < par->n_philos)
 	{
 		assign_data(all, i);
-		pthread_mutex_init(&p[i]->left, NULL); // Simplifier arg ?
+		pthread_mutex_init(&all->p[i].left, NULL); // Simplifier arg ?
 		if (i == par->n_philos - 1)
-			p[i]->right = p[0]->left;
+			all->p[i].right = all->p[0].left;
 		else
-			p[i]->right = p[i + 1]->left;
+			all->p[i].right = all->p[i + 1].left;
 		i++;
 	}
 	return (0);
@@ -53,8 +53,9 @@ int		philosophers(t_params *par)
 	init_mutex(all);
 	if (!all)
 		return (1);
-	if (init_data(all, par, &all->p))
+	if (init_data(all, par))
 		return (1); // FREE DES TRUCS
+	ft_putstr("after init data\n");
 	create_threads(par->n_philos, all);
 	return (0);
 }

@@ -63,6 +63,7 @@ typedef	struct		s_all
 	THREAD			supervisor;
 }					t_all;
 
+void			ft_putstr(char *str);
 void    		print_status(long int timestamp, int id, char *str);
 void   		 	ft_putlnbr(long int nb);
 void    		ft_putnbr(int nb);

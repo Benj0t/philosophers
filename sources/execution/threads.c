@@ -38,14 +38,10 @@ int		ft_eat(t_philo *philo)
 	pthread_mutex_lock(philo->print);
 	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork\n");
 	pthread_mutex_unlock(philo->print);
-	// if (check_death(philo))
-	// 	return (1);
 	pthread_mutex_lock(philo->print);
 	print_status(get_tstamp(philo->time.start), philo->id, "is eating\n");
 	pthread_mutex_unlock(philo->print);
 	ft_usleep(philo->par->time_eat);
-	// if (check_death(philo))
-	// 	return (1);
 	pthread_mutex_unlock(&philo->left);
 	pthread_mutex_unlock(&philo->right);
 	philo->last_eat = get_time();
@@ -69,7 +65,7 @@ void	*start_routine(void *par)
 
 	philo = (t_philo *)par;
 	philo->eat_times = 0;
-	ded = false;
+	ded = 0;
 	philo->dead = 0;
 	if (!(philo->id % 2))
 		swap_forks(philo);
@@ -77,7 +73,7 @@ void	*start_routine(void *par)
 	philo->last_eat = philo->time.start;
 	while (!ded)
 	{
-		if (philo->eat_index < philo->par->n_times_eat)
+		if (philo->par->n_times_eat == -1 || philo->eat_index < philo->par->n_times_eat)
 		{
 			if (ft_eat(philo))
 				return (NULL);
