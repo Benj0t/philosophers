@@ -1,12 +1,16 @@
-#include "philo.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/12/16 10:11:04 by bemoreau          #+#    #+#             */
+/*   Updated: 2021/12/16 10:13:31 by bemoreau         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-/*  ARGS:
-    number_of_philo;
-    time_to_die;
-    time_to_eat;
-    time_to_sleep;
-    [n_times_philo_must_eat];
-*/
+#include "philo.h"
 
 void  ft_putstr(char *str)
 {
@@ -32,8 +36,6 @@ int	main(int argc, char **argv)
 		return(error_message("Error\nWrong number of arguments"));
 	if (parser(argc, argv, &par))
 		return(error_message("Error\nWrong arguments"));
-//    printf("\t//ARGS//\nn_philo: %d\ntime_die: %d\ntime_eat: %d\ntime_sleep: %d\nn_times_eat: %d\n\t//ARGS//\n", par.n_philos, par.time_die, par.time_eat, par.time_sleep, par.n_times_eat);
-	ft_putstr("before philosophers call\n");
   if (philosophers(&par))
 		return(error_message("Error\nSomething went wrong during execution"));
 }
