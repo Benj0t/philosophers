@@ -43,6 +43,7 @@ typedef struct		s_philo
 	MUTEX			*print;
 	MUTEX			*eat_times;
 
+	int				stop;
 	int				*n_eat_times;
 	unsigned int	last_eat; // FINI DE MANGER
 	int				*dead;
@@ -64,19 +65,20 @@ typedef	struct		s_all
 }					t_all;
 
 void			ft_putstr(char *str);
-void    		print_status(long int timestamp, int id, char *str, int dead);
-void   		 	ft_putlnbr(long int nb);
-void    		ft_putnbr(int nb);
-void		    ft_putchar(char c);
-long int    	get_time();
-void  	    	ft_usleep(long int time);
-long int	    get_tstamp(unsigned int ref);
-int 	        ft_atoi(const char *str);
+int				check_stop(t_all *all);
+void			print_status(long int timestamp, int id, char *str, int dead);
+void   			ft_putlnbr(long int nb);
+void			ft_putnbr(int nb);
+void			ft_putchar(char c);
+long int		get_time();
+void  			ft_usleep(long int time);
+long int		get_tstamp(unsigned int ref);
+int 			ft_atoi(const char *str);
 unsigned int	ft_atoui(const char *str);
-int             is_digit(char *str);
-int             parser(int argc, char **argv, t_params *par);
+int				is_digit(char *str);
+int				parser(int argc, char **argv, t_params *par);
 int				philosophers(t_params *par);
-int			    create_threads(int nb, t_all *all);
-int             error_message(char *str);
+int				create_threads(int nb, t_all *all);
+int				error_message(char *str);
 
 #endif
