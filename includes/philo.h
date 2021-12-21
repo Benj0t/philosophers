@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 14:51:44 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 15:51:00 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 16:19:32 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct s_all
 	pthread_t				supervisor;
 }					t_all;
 
+void			*start_routine(void *par);
 void			ft_putstr(char *str);
 int				check_stop(t_all *all);
 void			print_status(long int timestamp, int id, char *str, int dead);
