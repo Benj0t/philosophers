@@ -6,30 +6,30 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:40 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/16 10:13:33 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 15:17:59 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static	int		ft_iswhspaces(int ch)
+static	int	ft_iswhspaces(int ch)
 {
 	if ((ch <= 13 && ch >= 9) || ch == 32)
 		return (1);
 	return (0);
 }
 
-static int      ft_isdigit(char c)
+static int	ft_isdigit(char c)
 {
-    if (c <= '9' && c >= '0')
-        return (1);
-    return (0);
+	if (c <= '9' && c >= '0')
+		return (1);
+	return (0);
 }
 
-int				ft_atoi(const char *str)
+int	ft_atoi(const char *str)
 {
-	int i;
-	int nb;
+	int	i;
+	int	nb;
 
 	i = 0;
 	nb = 0;
@@ -44,8 +44,8 @@ int				ft_atoi(const char *str)
 
 unsigned int	ft_atoui(const char *str)
 {
-	int i;
-	unsigned int nb;
+	int				i;
+	unsigned int	nb;
 
 	i = 0;
 	nb = 0;

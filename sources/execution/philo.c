@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:10:38 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/16 10:10:39 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 15:50:58 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,18 @@ void	assign_data(t_all *all, int i)
 	all->p[i].right = NULL;
 }
 
-int		init_data(t_all *all, t_params *par)
+int	init_data(t_all *all, t_params *par)
 {
-	int i;
+	int	i;
 
 	i = 0;
-	//ADD FREE_PARAMS BEFORE RET;
 	all->p = (t_philo *)malloc(sizeof(t_philo) * (par->n_philos));
 	if (!all->p)
-		return (1); // FREE DES TRUCS
+		return (1);
 	while (i < par->n_philos)
 	{
 		assign_data(all, i);
-		pthread_mutex_init(&all->p[i].left, NULL); // Simplifier arg ?
+		pthread_mutex_init(&all->p[i].left, NULL);
 		if (i == par->n_philos - 1)
 			all->p[i].right = &all->p[0].left;
 		else
@@ -55,7 +54,7 @@ int		init_data(t_all *all, t_params *par)
 	return (0);
 }
 
-int		ft_free(t_all *all)
+int	ft_free(t_all *all)
 {
 	if (all && all->p)
 		free(all->p);
@@ -64,7 +63,7 @@ int		ft_free(t_all *all)
 	return (1);
 }
 
-int		philosophers(t_params *par)
+int	philosophers(t_params *par)
 {
 	t_all	*all;
 
@@ -79,7 +78,7 @@ int		philosophers(t_params *par)
 	if (!all)
 		return (ft_free(all));
 	if (init_data(all, par))
-		return (ft_free(all)); // FREE DES TRUCS
+		return (ft_free(all));
 	create_threads(par->n_philos, all);
 	ft_free(all);
 	return (0);

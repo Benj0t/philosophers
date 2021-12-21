@@ -6,22 +6,22 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:59 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/16 10:12:15 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 15:42:31 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int     is_digit(char *str)
+int	is_digit(char *str)
 {
-    int i;
+	int	i;
 
-    i = 0;
-    while (str[i])
-    {
-        if (!(str[i] <= '9' && str[i] >= '0') && str[i] != '+')
-            return (1); 
-        i++;
-    }
-    return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (!(str[i] <= '9' && str[i] >= '0') && str[i] != '+')
+			return (1);
+		i++;
+	}
+	return (0);
 }

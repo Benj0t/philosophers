@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   threads.c                                          :+:      :+:    :+:   */
+/*   pthread_ts.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:10:52 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 13:23:28 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 15:45:52 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,21 +15,23 @@
 void	ft_sleep(t_philo *philo)
 {
 	pthread_mutex_lock(philo->print);
-	print_status(get_tstamp(philo->time.start), philo->id, "is sleeping", *philo->dead);
+	print_status(get_tstamp(philo->time.start), philo->id, "is sleeping", \
+		*philo->dead);
 	pthread_mutex_unlock(philo->print);
 	ft_usleep(philo->par->time_sleep);
 	pthread_mutex_lock(philo->print);
-	print_status(get_tstamp(philo->time.start), philo->id, "is thinking", *philo->dead);
+	print_status(get_tstamp(philo->time.start), philo->id, "is thinking", \
+		*philo->dead);
 	pthread_mutex_unlock(philo->print);
-
 }
-// TEMPS DERNIER MANGER = ref pour le surveillant
-int		ft_eat(t_philo *philo)
+
+int	ft_eat(t_philo *philo)
 {
 	philo->time.reftime = get_time();
 	pthread_mutex_lock(&philo->left);
 	pthread_mutex_lock(philo->print);
-	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", *philo->dead);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
+		*philo->dead);
 	pthread_mutex_unlock(philo->print);
 	if (&philo->left == philo->right)
 	{
@@ -38,11 +40,12 @@ int		ft_eat(t_philo *philo)
 	}
 	pthread_mutex_lock(philo->right);
 	pthread_mutex_lock(philo->print);
-	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", *philo->dead);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
+		*philo->dead);
 	pthread_mutex_unlock(philo->print);
 	pthread_mutex_lock(philo->print);
-	// printf("%d ate %d times:\n", philo->id, philo->eat_index + 1);
-	print_status(get_tstamp(philo->time.start), philo->id, "is eating", *philo->dead);
+	print_status(get_tstamp(philo->time.start), philo->id, "is eating", \
+		*philo->dead);
 	pthread_mutex_unlock(philo->print);
 	ft_usleep(philo->par->time_eat);
 	pthread_mutex_unlock(philo->right);
@@ -53,9 +56,6 @@ int		ft_eat(t_philo *philo)
 	pthread_mutex_unlock(philo->eat_times);
 	return (0);
 }
-
-// if 1 philo, loop
-// times_eat == death, not end
 
 void	*start_routine(void *par)
 {
@@ -70,7 +70,8 @@ void	*start_routine(void *par)
 		ft_usleep(philo->par->time_eat / 2);
 	while (ded == 0)
 	{
-		if (philo->par->n_times_eat == -1 || philo->eat_index <= philo->par->n_times_eat)
+		if (philo->par->n_times_eat == -1 || \
+			philo->eat_index <= philo->par->n_times_eat)
 		{
 			if (ft_eat(philo) || philo->stop == 1)
 				return (NULL);
@@ -83,11 +84,9 @@ void	*start_routine(void *par)
 	return (NULL);
 }
 
-
-
 void	*supervisor(void *par)
 {
-	t_all *all;
+	t_all	*all;
 	int		i;
 	int		count;
 
@@ -124,9 +123,9 @@ void	*supervisor(void *par)
 	return (NULL);
 }
 
-int	 create_threads(int nb, t_all *all)
+int	create_threads(int nb, t_all *all)
 {
-	int	i;
+	int		i;
 	long	time;
 
 	time = get_time();
@@ -135,8 +134,9 @@ int	 create_threads(int nb, t_all *all)
 	{
 		all->p[i].time.start = time;
 		all->p[i].last_eat = all->p[i].time.start;
-		if (pthread_create(&(all->p[i].thread), NULL, &start_routine, &(all->p[i])))
-			return (error_message("Cant create enough threads\n"));
+		if (pthread_create(&(all->p[i].thread), NULL, &start_routine, \
+			&(all->p[i])))
+			return (error_message("Cant create enough pthread_ts\n"));
 	}
 	i = -1;
 	pthread_create(&(all->supervisor), NULL, &supervisor, all);

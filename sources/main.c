@@ -6,19 +6,19 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:04 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/16 10:13:31 by bemoreau         ###   ########.fr       */
+/*   Updated: 2021/12/21 15:45:23 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void  ft_putstr(char *str)
+void	ft_putstr(char *str)
 {
-  int i;
+	int	i;
 
-  i = 0;
-  while (str[i])
-    write(1, &(str[i++]), 1);
+	i = 0;
+	while (str[i])
+		write(1, &(str[i++]), 1);
 }
 
 int	error_message(char *str)
@@ -29,13 +29,13 @@ int	error_message(char *str)
 
 int	main(int argc, char **argv)
 {
-  t_params   par;
+	t_params	par;
 
-  par.n_times_eat = 0;
+	par.n_times_eat = 0;
 	if (argc < 5 || argc > 6)
-		return(error_message("Error\nWrong number of arguments"));
+		return (error_message("Error\nWrong number of arguments"));
 	if (parser(argc, argv, &par))
-		return(error_message("Error\nWrong arguments"));
-  if (philosophers(&par))
-		return(error_message("Error\nSomething went wrong during execution"));
+		return (error_message("Error\nWrong arguments"));
+	if (philosophers(&par))
+		return (error_message("Error\nSomething went wrong during execution"));
 }
