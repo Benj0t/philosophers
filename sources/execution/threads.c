@@ -23,6 +23,43 @@ void	*announce_death(t_all *all, int id)
 	return (NULL);
 }
 
+void	ft_eat2_right(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->left);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
+		*philo->dead);
+	pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "is eating", \
+		*philo->dead);
+	pthread_mutex_unlock(philo->print);
+	ft_usleep(philo->par->time_eat);
+	pthread_mutex_unlock(&philo->left);
+	pthread_mutex_unlock(philo->right);
+	pthread_mutex_lock(philo->eat_times);
+	philo->last_eat = get_time();
+	philo->eat_index++;
+	pthread_mutex_unlock(philo->eat_times);
+}
+
+int	ft_eat_right(t_philo *philo)
+{
+	philo->time.reftime = get_time();
+	pthread_mutex_lock(philo->right);
+	pthread_mutex_lock(philo->print);
+	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
+		*philo->dead);
+	pthread_mutex_unlock(philo->print);
+	if (&philo->left == philo->right)
+	{
+		*philo->dead = 1;
+		return (0);
+	}
+	ft_eat2_right(philo);
+	return (0);
+}
+
 void	*supervisor(void *par)
 {
 	t_all	*all;
@@ -35,8 +72,7 @@ void	*supervisor(void *par)
 		pthread_mutex_lock(all->p[i].eat_times);
 		if (all->p[i].eat_index == all->par.n_times_eat)
 			all->p[i].stop = 1;
-		pthread_mutex_unlock(all->p[i].eat_times);
-		if (check_stop(all) == all->par.n_philos)
+		if (check_stop(all) == all->par.n_philos - 1)
 		{
 			pthread_mutex_lock(&all->death);
 			all->dead = 1;
@@ -45,6 +81,7 @@ void	*supervisor(void *par)
 		}
 		if (get_tstamp(all->p[i].last_eat) > all->par.time_die)
 			return (announce_death(all, i));
+		pthread_mutex_unlock(all->p[i].eat_times);
 		i++;
 		if (i == all->par.n_philos)
 			i = 0;

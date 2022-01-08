@@ -76,6 +76,8 @@ void			ft_putlnbr(long int nb);
 void			ft_putnbr(int nb);
 void			ft_putchar(char c);
 long int		get_time(void);
+void			ft_eat2_right(t_philo *philo);
+int				ft_eat_right(t_philo *philo);
 void			ft_usleep(long int time);
 long int		get_tstamp(unsigned int ref);
 int				ft_atoi(const char *str);

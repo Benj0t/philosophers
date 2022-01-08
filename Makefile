@@ -31,7 +31,7 @@ OBJ = $(SRCS:.c=.o)
 
 CC = gcc
 L_CC = clang
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror #-fsanitize=thread -g
 LIB = -lpthread
 ### COLORS ###
 

@@ -39,8 +39,8 @@ void	ft_eat2(t_philo *philo)
 	ft_usleep(philo->par->time_eat);
 	pthread_mutex_unlock(philo->right);
 	pthread_mutex_unlock(&philo->left);
-	philo->last_eat = get_time();
 	pthread_mutex_lock(philo->eat_times);
+	philo->last_eat = get_time();
 	philo->eat_index++;
 	pthread_mutex_unlock(philo->eat_times);
 }
@@ -71,15 +71,18 @@ void	*start_routine(void *par)
 	philo = (t_philo *)par;
 	ded = 0;
 	times = 0;
-	if (philo->id % 2)
-		ft_usleep(philo->par->time_eat / 2);
 	while (ded == 0)
 	{
 		if (philo->par->n_times_eat == -1 || \
 			times < philo->par->n_times_eat)
 		{
-			if (ft_eat(philo) || philo->stop == 1)
-				return (NULL);
+			if (philo->id % 2)
+			{
+				if (ft_eat_right(philo) || philo->stop == 1)
+					return (NULL);
+			}
+			else if (ft_eat(philo) || philo->stop == 1)
+					return (NULL);
 			ft_sleep(philo);
 			times++;
 		}
