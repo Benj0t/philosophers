@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:23 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 16:19:55 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/08 10:26:22 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,22 @@ void	*start_routine(void *par)
 {
 	t_philo			*philo;
 	sig_atomic_t	ded;
+	int				times;
 
 	philo = (t_philo *)par;
-	philo->eat_index = 0;
-	philo->stop = 0;
 	ded = 0;
+	times = 0;
 	if (philo->id % 2)
 		ft_usleep(philo->par->time_eat / 2);
 	while (ded == 0)
 	{
 		if (philo->par->n_times_eat == -1 || \
-			philo->eat_index <= philo->par->n_times_eat)
+			times < philo->par->n_times_eat)
 		{
 			if (ft_eat(philo) || philo->stop == 1)
 				return (NULL);
 			ft_sleep(philo);
+			times++;
 		}
 		pthread_mutex_lock(philo->death);
 		ded = *philo->dead;

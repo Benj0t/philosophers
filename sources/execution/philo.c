@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:10:38 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 15:50:58 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/08 10:25:04 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	assign_data(t_all *all, int i)
 	all->p[i].eat_index = 0;
 	all->p[i].last_eat = 0;
 	all->p[i].right = NULL;
+	all->p[i].eat_index = 0;
+	all->p[i].stop = 0;
 }
 
 int	init_data(t_all *all, t_params *par)
