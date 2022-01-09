@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:23 by bemoreau          #+#    #+#             */
-/*   Updated: 2022/01/08 10:26:22 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/09 17:12:06 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,14 @@ void	ft_eat2(t_philo *philo)
 	ft_usleep(philo->par->time_eat);
 	pthread_mutex_unlock(philo->right);
 	pthread_mutex_unlock(&philo->left);
-	philo->last_eat = get_time();
 	pthread_mutex_lock(philo->eat_times);
+	philo->last_eat = get_time();
 	philo->eat_index++;
 	pthread_mutex_unlock(philo->eat_times);
 }
 
 int	ft_eat(t_philo *philo)
 {
-	philo->time.reftime = get_time();
 	pthread_mutex_lock(&philo->left);
 	pthread_mutex_lock(philo->print);
 	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
@@ -59,6 +58,19 @@ int	ft_eat(t_philo *philo)
 		return (0);
 	}
 	ft_eat2(philo);
+	return (0);
+}
+
+int	routine(t_philo *philo)
+{
+	if (philo->id % 2)
+	{
+		if (ft_eat_right(philo) || philo->stop == 1)
+			return (1);
+	}
+	else if (ft_eat(philo) || philo->stop == 1)
+		return (1);
+	ft_sleep(philo);
 	return (0);
 }
 
@@ -78,9 +90,8 @@ void	*start_routine(void *par)
 		if (philo->par->n_times_eat == -1 || \
 			times < philo->par->n_times_eat)
 		{
-			if (ft_eat(philo) || philo->stop == 1)
+			if (routine(philo))
 				return (NULL);
-			ft_sleep(philo);
 			times++;
 		}
 		pthread_mutex_lock(philo->death);

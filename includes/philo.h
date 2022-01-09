@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 14:51:44 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 16:19:32 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/09 15:55:47 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_params
 typedef struct s_time
 {
 	long int		start;
-	long int		reftime;
 	long int		curtime;
 }					t_time;
 
@@ -76,6 +75,8 @@ void			ft_putlnbr(long int nb);
 void			ft_putnbr(int nb);
 void			ft_putchar(char c);
 long int		get_time(void);
+void			ft_eat2_right(t_philo *philo);
+int				ft_eat_right(t_philo *philo);
 void			ft_usleep(long int time);
 long int		get_tstamp(unsigned int ref);
 int				ft_atoi(const char *str);
