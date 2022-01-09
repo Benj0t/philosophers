@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:10:52 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 16:19:08 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/09 17:00:11 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void	*announce_death(t_all *all, int id)
 	print_status(get_tstamp(all->p[id].time.start), id, "is dead", 0);
 	pthread_mutex_unlock(&all->death);
 	pthread_mutex_unlock(&all->print);
+	pthread_mutex_unlock(all->p[id].eat_times);
 	return (NULL);
 }
 
@@ -45,7 +46,6 @@ void	ft_eat2_right(t_philo *philo)
 
 int	ft_eat_right(t_philo *philo)
 {
-	philo->time.reftime = get_time();
 	pthread_mutex_lock(philo->right);
 	pthread_mutex_lock(philo->print);
 	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \

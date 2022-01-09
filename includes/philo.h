@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/21 14:51:44 by bemoreau          #+#    #+#             */
-/*   Updated: 2021/12/21 16:19:32 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/09 15:55:47 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ typedef struct s_params
 typedef struct s_time
 {
 	long int		start;
-	long int		reftime;
 	long int		curtime;
 }					t_time;
 

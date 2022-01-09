@@ -6,7 +6,7 @@
 /*   By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/16 10:11:23 by bemoreau          #+#    #+#             */
-/*   Updated: 2022/01/08 10:26:22 by bemoreau         ###   ########.fr       */
+/*   Updated: 2022/01/09 17:12:06 by bemoreau         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ void	ft_eat2(t_philo *philo)
 
 int	ft_eat(t_philo *philo)
 {
-	philo->time.reftime = get_time();
 	pthread_mutex_lock(&philo->left);
 	pthread_mutex_lock(philo->print);
 	print_status(get_tstamp(philo->time.start), philo->id, "has taken a fork", \
@@ -62,6 +61,19 @@ int	ft_eat(t_philo *philo)
 	return (0);
 }
 
+int	routine(t_philo *philo)
+{
+	if (philo->id % 2)
+	{
+		if (ft_eat_right(philo) || philo->stop == 1)
+			return (1);
+	}
+	else if (ft_eat(philo) || philo->stop == 1)
+		return (1);
+	ft_sleep(philo);
+	return (0);
+}
+
 void	*start_routine(void *par)
 {
 	t_philo			*philo;
@@ -71,19 +83,15 @@ void	*start_routine(void *par)
 	philo = (t_philo *)par;
 	ded = 0;
 	times = 0;
+	if (philo->id % 2)
+		ft_usleep(philo->par->time_eat / 2);
 	while (ded == 0)
 	{
 		if (philo->par->n_times_eat == -1 || \
 			times < philo->par->n_times_eat)
 		{
-			if (philo->id % 2)
-			{
-				if (ft_eat_right(philo) || philo->stop == 1)
-					return (NULL);
-			}
-			else if (ft_eat(philo) || philo->stop == 1)
-					return (NULL);
-			ft_sleep(philo);
+			if (routine(philo))
+				return (NULL);
 			times++;
 		}
 		pthread_mutex_lock(philo->death);
