@@ -12,32 +12,12 @@
 
 #include "philo.h"
 
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void	ft_putnbr(int nb)
-{
-	if (nb > 10)
-		ft_putnbr(nb / 10);
-	ft_putchar(nb % 10 + 48);
-}
-
-void	ft_putlnbr(long int nb)
-{
-	if (nb >= 10)
-		ft_putlnbr(nb / 10);
-	ft_putchar(nb % 10 + 48);
-}
-
 void	print_status(long int timestamp, int id, char *str, int dead)
 {
 	int	i;
 
 	i = 0;
-	(void)dead;
 	if (dead == 1)
 		return ;
-	printf("%ld %d %s\n", timestamp, id, str);
+	printf("%ld %u %s\n", timestamp, id + 1, str);
 }

@@ -36,13 +36,13 @@ void	ft_eat2(t_philo *philo)
 	print_status(get_tstamp(philo->time.start), philo->id, "is eating", \
 		*philo->dead);
 	pthread_mutex_unlock(philo->print);
-	ft_usleep(philo->par->time_eat);
-	pthread_mutex_unlock(philo->right);
-	pthread_mutex_unlock(&philo->left);
 	pthread_mutex_lock(philo->eat_times);
 	philo->last_eat = get_time();
 	philo->eat_index++;
 	pthread_mutex_unlock(philo->eat_times);
+	ft_usleep(philo->par->time_eat);
+	pthread_mutex_unlock(philo->right);
+	pthread_mutex_unlock(&philo->left);
 }
 
 int	ft_eat(t_philo *philo)
@@ -55,6 +55,7 @@ int	ft_eat(t_philo *philo)
 	if (&philo->left == philo->right)
 	{
 		*philo->dead = 1;
+		pthread_mutex_unlock(&philo->left);
 		return (0);
 	}
 	ft_eat2(philo);
@@ -65,11 +66,18 @@ int	routine(t_philo *philo)
 {
 	if (philo->id % 2)
 	{
-		if (ft_eat_right(philo) || philo->stop == 1)
+		if (ft_eat_right(philo))
 			return (1);
 	}
-	else if (ft_eat(philo) || philo->stop == 1)
+	else if (ft_eat(philo))
 		return (1);
+	pthread_mutex_lock(philo->eat_times);
+	if (philo->stop == 1)
+	{
+		pthread_mutex_unlock(philo->eat_times);
+		return (1);
+	}
+	pthread_mutex_unlock(philo->eat_times);
 	ft_sleep(philo);
 	return (0);
 }

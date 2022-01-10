@@ -68,12 +68,8 @@ typedef struct s_all
 }					t_all;
 
 void			*start_routine(void *par);
-void			ft_putstr(char *str);
 int				check_stop(t_all *all);
 void			print_status(long int timestamp, int id, char *str, int dead);
-void			ft_putlnbr(long int nb);
-void			ft_putnbr(int nb);
-void			ft_putchar(char c);
 long int		get_time(void);
 void			ft_eat2_right(t_philo *philo);
 int				ft_eat_right(t_philo *philo);
