@@ -53,7 +53,7 @@ void	*announce_death(t_all *all, int id, int print)
 	pthread_mutex_lock(&all->death);
 	pthread_mutex_lock(&all->print);
 	all->dead = 1;
-	print_status(get_tstamp(all->p[id].time.start), id, "is dead", print);
+	print_status(get_tstamp(all->p[id].time.start), id, "died", print);
 	pthread_mutex_unlock(&all->death);
 	pthread_mutex_unlock(&all->print);
 	pthread_mutex_unlock(all->p[id].eat_times);
