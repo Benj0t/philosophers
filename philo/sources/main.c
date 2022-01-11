@@ -12,6 +12,15 @@
 
 #include "philo.h"
 
+int	ft_free(t_all *all)
+{
+	if (all && all->p)
+		free(all->p);
+	if (all)
+		free(all);
+	return (1);
+}
+
 int	error_message(char *str)
 {
 	printf("%s\n", str);

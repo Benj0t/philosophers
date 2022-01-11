@@ -56,13 +56,22 @@ int	init_data(t_all *all, t_params *par)
 	return (0);
 }
 
-int	ft_free(t_all *all)
+void	end_simulation(t_all *all)
 {
-	if (all && all->p)
-		free(all->p);
-	if (all)
-		free(all);
-	return (1);
+	int	i;
+
+	i = -1;
+	while (++i < all->par.n_philos)
+	{
+		pthread_join(all->p[i].thread, NULL);
+	}
+	pthread_join(all->supervisor, NULL);
+	i = -1;
+	while (++i < all->par.n_philos)
+		pthread_mutex_destroy(&all->p[i].left);
+	pthread_mutex_destroy(&all->print);
+	pthread_mutex_destroy(&all->eat_times);
+	pthread_mutex_destroy(&all->death);
 }
 
 int	philosophers(t_params *par)

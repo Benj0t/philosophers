@@ -100,10 +100,7 @@ int	create_threads(int nb, t_all *all)
 			&(all->p[i])))
 			return (error_message("Cant create enough pthread_ts\n"));
 	}
-	i = -1;
 	pthread_create(&(all->supervisor), NULL, &supervisor, all);
-	while (++i < nb)
-		pthread_join(all->p[i].thread, NULL);
-	pthread_join(all->supervisor, NULL);
+	end_simulation(all);
 	return (0);
 }

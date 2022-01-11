@@ -67,6 +67,8 @@ typedef struct s_all
 	pthread_t				supervisor;
 }					t_all;
 
+void			end_simulation(t_all *all);
+int				ft_free(t_all *all);
 void			*start_routine(void *par);
 int				check_stop(t_all *all);
 void			print_status(long int timestamp, int id, char *str, int dead);
