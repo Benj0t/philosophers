@@ -6,12 +6,12 @@
 #    By: bemoreau <bemoreau@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/08/13 19:04:13 by bemoreau          #+#    #+#              #
-#    Updated: 2022/01/09 16:55:16 by bemoreau         ###   ########.fr        #
+#    Updated: 2022/01/11 16:30:48 by bemoreau         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philosophers
-INCLUDE =	philo.h\
+NAME = philo
+INCLUDE = philo.h\
 
 INC_PATH = ./includes/
 
